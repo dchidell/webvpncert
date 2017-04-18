@@ -1,6 +1,8 @@
 # webvpncert
 Python script to import SSL certificates into IOS routers for WEBVPN
 
+```sh
+$python3 ssl_cert.py -h
 usage: ssl_cert.py [-h] [--u admin] [--p mypassword] [--acme /root/.acme.sh]
                    [--gateway VPNGW] [--noreplace]
                    ip name domain webroot
@@ -25,6 +27,8 @@ optional arguments:
                         find it out
   --noreplace           If the certificate is not expiring, this program will
                         not attempt to replace it in the router
+root@dchidell-ubuntu:/home/david# 
+```
 
 
 Example:
