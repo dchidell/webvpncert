@@ -26,7 +26,6 @@ optional arguments:
                         find it out
   --noreplace           If the certificate is not expiring, this program will
                         not attempt to replace it in the router
-root@dchidell-ubuntu:/home/david# 
 ```
 
 
