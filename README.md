@@ -2,7 +2,8 @@
 Python script to import SSL certificates into IOS routers for WEBVPN
 
 ```
-usage: ssl_cert.py [-h] [--u admin] [--p mypassword] [--acme /root/.acme.sh]
+usage: ssl_cert.py [-h] [--u admin] [--p mypassword]
+                   [--sshkey /path/to/ssh/key.rsa] [--acme /root/.acme.sh]
                    [--gateway VPNGW] [--noreplace]
                    ip name domain webroot
 
@@ -20,6 +21,8 @@ optional arguments:
   -h, --help            show this help message and exit
   --u admin             Username (will prompt via stdin if empty)
   --p mypassword        Password (will prompt via stdin if empty)
+  --sshkey /path/to/ssh/key.rsa
+                        Path to router public SSH key
   --acme /root/.acme.sh
                         Acme script path - default /root/.acme.sh
   --gateway VPNGW       Define VPN gateway on router - default attempts to
