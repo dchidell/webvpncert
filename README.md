@@ -4,7 +4,7 @@ Python script to import SSL certificates into IOS routers for WEBVPN
 ```
 usage: ssl_cert.py [-h] [--u admin] [--p mypassword]
                    [--sshkey /path/to/ssh/key.rsa] [--acme /root/.acme.sh]
-                   [--gateway VPNGW] [--noreplace]
+                   [--gateway VPNGW] [--noreplace] [--forcerecert]
                    ip name domain webroot
 
 Fetch SSL certificates and install them into an IOS router for SSL WEBVPN
@@ -29,6 +29,8 @@ optional arguments:
                         find it out
   --noreplace           If the certificate is not expiring, this program will
                         not attempt to replace it in the router
+  --forcerecert         Force a recert with LetsEncrypt even if the cert
+                        hasn't expired.
 ```
 
 
