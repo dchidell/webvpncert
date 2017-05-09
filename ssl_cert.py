@@ -182,7 +182,7 @@ def main():
     cert_path = '{}/{}/{}.cer'.format(acme_path,root_domain,root_domain)
 
     #Check to see if our certificate has or will expire soon
-    if(cert_valid(cert_path.format(acme_path,root_domain,root_domain)) && args.forcerecert == False):
+    if(cert_valid(cert_path.format(acme_path,root_domain,root_domain)) and args.forcerecert == False):
         print('Server certificate has not expired and will not expire in the next day. Not renewing with LetsEncrypt')
         if(args.noreplace == True):
             print('--noreplace argument detected. Certificate state is OK. Not proceeding further.')
