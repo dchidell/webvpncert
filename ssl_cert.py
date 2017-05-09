@@ -2,9 +2,9 @@
 #Author: David Chidell (dchidell)
 
 #################################
-#This script will fetch and install SSL certificates into a Cisco IOS router for WEBVPN usage.
+# This script will fetch and install SSL certificates into a Cisco IOS router for WEBVPN usage.
 #################################
-#The following configuration is performed as a result of this script:
+# The following configuration is performed as a result of this script:
 # * Certificate generated (via LetsEncrypt)
 # * Existing crypto components removed and cleaned
 # * Private key re-generation to 3des format
@@ -13,7 +13,12 @@
 ##################################
 # Usage: 'python3 ssl_cert.py 10.75.23.1 CA_LETSENCRYPT vpn.example.com,example.com /var/www/html'
 ##################################
-#
+# Requirements:
+# * Python libraries: netmiko, argparse, getpass
+# * Cisco IOS router with WEBVPN configured
+# * Internet connectivity for letsencrypt to function
+# * Access to the root directory of a webserver to prove domain ownership
+##################################
 
 import netmiko
 import subprocess
