@@ -34,6 +34,7 @@ def parse_args():
     parser.add_argument("--acme",metavar="/root/.acme.sh", help="Acme script path - default /root/.acme.sh",default="/root/.acme.sh")
     parser.add_argument("--gateway",metavar="VPNGW",help="Define VPN gateway on router - default attempts to find it out")
     parser.add_argument("--noreplace",help="If the certificate is not expiring, this program will not attempt to replace it in the router",action="store_true")
+    parser.add_argument("--forcerecert",help="Force a recert with LetsEncrypt even if the cert hasn't expired.",action="store_true")
     parser.add_argument("ip",help="IP / hostname")
     parser.add_argument("name",help="Cert / trustpoint name")
     parser.add_argument("domain",help="Domain: example.com or example.com,subdomain.example.com,test.example.com")
@@ -181,13 +182,17 @@ def main():
     cert_path = '{}/{}/{}.cer'.format(acme_path,root_domain,root_domain)
 
     #Check to see if our certificate has or will expire soon
-    if(cert_valid(cert_path.format(acme_path,root_domain,root_domain))):
+    if(cert_valid(cert_path.format(acme_path,root_domain,root_domain)) && args.forcerecert == False):
         print('Server certificate has not expired and will not expire in the next day. Not renewing with LetsEncrypt')
         if(args.noreplace == True):
             print('--noreplace argument detected. Certificate state is OK. Not proceeding further.')
             exit()
     else:
-        print('Cert has expired or is expiring soon! Renewing...')
+        if(args.forcerecert):
+            print('Forcing recert enabled. Renewing...')
+        else:
+            print('Cert has expired or is expiring soon! Renewing...')
+
         if(renew_cert(domains,acme_path,webroot,show_error=True)):
             print('Error: Acme.sh encountered an error when running')
 
