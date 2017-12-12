@@ -3,7 +3,6 @@
 
 #################################
 # This script will install SSL certificates into a Cisco IOS router for WEBVPN usage.
-# This differs from ssl_cert.py in the sense that this simply loads existing certificates into the router. It does not attempt to get them from LetsEncrypt.
 #################################
 # The following configuration is performed as a result of this script:
 # * Existing crypto components removed and cleaned
@@ -21,6 +20,7 @@
 
 import argparse
 import os.path
+import os
 import subprocess
 
 import netmiko
@@ -128,13 +128,17 @@ def import_cert(term, name, key_password, intermediate_cert, priv_key, ssl_cert)
             command_list.append(fileh.read())
             command_list.append('quit')
     term.send_config_set(command_list)
+    
 
 
 def convert_key(key, password):
     return not subprocess.call(
         'openssl rsa -in {} -out {}.3des -des3 -passout pass:"{}" > /dev/null'.format(key, key, password), shell=True)
 
-
+def move_cert_files(file_list,dest_dir):
+    for file in file_list:
+        os.rename(file,dest_dir+file.replace('/','_'))
+        
 def configure_gateway(term, gateway, name):
     if (gateway is None):
         out = term.send_command('show webvpn gateway')
@@ -164,6 +168,16 @@ def main():
     intermediate_path = args.cert_ca
     key_path = args.cert_key
     cert_path = args.cert_primary
+    
+    # Check presence of certificates
+    if are_certs_present(key_path, cert_path, intermediate_path):
+        print('Found certificates!')
+    else:
+        print('Warning: Unable to find certs! Check the following exist:')
+        print(cert_path)
+        print(intermediate_path)
+        print(key_path)
+        exit()
 
     # Check to see if our certificate has or will expire soon
     if (cert_valid(cert_path,args.renewtime)):
@@ -175,16 +189,6 @@ def main():
     else:
         print('Cert has expired or is expiring soon! RENEW ASAP!!!!!')
         exit(1)
-
-    # Check presence of certificates
-    if are_certs_present(key_path, cert_path, intermediate_path):
-        print('Found certificates!')
-    else:
-        print('Error: Unable to find certs! Check the following exist:')
-        print(cert_path)
-        print(intermediate_path)
-        print(key_path)
-        exit()
 
     # Convert private key to 3des format. We'll just use the SSH password for the key, why not
     if convert_key(key_path, cert_pass):
@@ -215,6 +219,10 @@ def main():
 
     print('Configuring trustpoint on VPN gateway.')
     configure_gateway(session, gateway, tp_name)
+    
+    print('Moving files to old dir')
+    file_list = [intermediate_path,key_path+'.3des',key_path,cert_path]
+    move_cert_files(file_list,'/certs/old/')
 
 
 main()
